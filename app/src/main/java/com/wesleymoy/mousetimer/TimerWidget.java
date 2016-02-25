@@ -7,23 +7,36 @@ import android.widget.RemoteViews;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
 import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class TimerWidget extends AppWidgetProvider {
 
+    public static final PeriodFormatter FORMATTER = new PeriodFormatterBuilder()
+            .appendDays()
+            .appendSeparator(" ")
+            .printZeroAlways()
+            .appendHours()
+            .appendSeparator(":")
+            .minimumPrintedDigits(2)
+            .appendMinutes()
+            .appendSeparator(":")
+            .appendSeconds()
+            .toFormatter();
+    private static final DateTime destination = new DateTime(2016, 3, 22, 16, 45, DateTimeZone.forOffsetHours(-7));
+
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-        DateTime destination = new DateTime(2016, 3, 22, 16, 45, DateTimeZone.forOffsetHours(-7));
         DateTime now = DateTime.now();
         Period period = new Period(now, destination);
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.timer_widget);
-        views.setTextViewText(R.id.appwidget_text, period.toString());
+        views.setTextViewText(R.id.appwidget_text, period.toString(FORMATTER));
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

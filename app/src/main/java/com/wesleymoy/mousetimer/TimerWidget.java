@@ -6,8 +6,8 @@ import android.content.Context;
 import android.widget.RemoteViews;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
+import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
@@ -27,12 +27,12 @@ public class TimerWidget extends AppWidgetProvider {
             .appendSeparator(":")
             .appendSeconds()
             .toFormatter();
-    private static final DateTime destination = new DateTime(2016, 3, 22, 16, 45, DateTimeZone.forOffsetHours(-7));
+    private static final DateTime DESTINATION = new DateTime(2016, 3, 22, 16, 45);
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         DateTime now = DateTime.now();
-        Period period = new Period(now, destination);
+        Period period = new Period(now, DESTINATION, PeriodType.dayTime());
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.timer_widget);

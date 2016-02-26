@@ -3,9 +3,11 @@ package com.wesleymoy.mousetimer;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormatter;
@@ -27,7 +29,18 @@ public class TimerWidget extends AppWidgetProvider {
             .appendSeparator(":")
             .appendSeconds()
             .toFormatter();
-    private static final DateTime DESTINATION = new DateTime(2016, 3, 22, 16, 45);
+    private static final DateTime DESTINATION;
+    private static final String TIME_ZONE_ID = "America/Los_Angeles";
+    private static final String TAG = "TimerWidget";
+
+    static {
+        if (DateTimeZone.getAvailableIDs().contains(TIME_ZONE_ID)) {
+            DESTINATION = new DateTime(2016, 3, 22, 16, 45, DateTimeZone.forID(TIME_ZONE_ID));
+        } else {
+            Log.e(TAG, "Time zone " + TIME_ZONE_ID + " not found; using system default instead");
+            DESTINATION = new DateTime(2016, 3, 22, 16, 45);
+        }
+    }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {

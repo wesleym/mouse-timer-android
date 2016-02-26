@@ -19,15 +19,12 @@ import org.joda.time.format.PeriodFormatterBuilder;
 public class TimerWidget extends AppWidgetProvider {
 
     public static final PeriodFormatter FORMATTER = new PeriodFormatterBuilder()
-            .appendDays()
-            .appendSeparator(" ")
             .printZeroAlways()
+            .appendDays()
+            .appendSuffix("d")
+            .appendSeparator(" ")
             .appendHours()
-            .appendSeparator(":")
-            .minimumPrintedDigits(2)
-            .appendMinutes()
-            .appendSeparator(":")
-            .appendSeconds()
+            .appendSuffix("h")
             .toFormatter();
     private static final DateTime DESTINATION;
     private static final String TIME_ZONE_ID = "America/Los_Angeles";

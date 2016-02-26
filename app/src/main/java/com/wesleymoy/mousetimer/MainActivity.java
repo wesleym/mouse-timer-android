@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static final DateTime DESTINATION;
     private static final String TIME_ZONE_ID = "America/Los_Angeles";
     private static final String TAG = "TimerWidget";
+
     static {
         if (DateTimeZone.getAvailableIDs().contains(TIME_ZONE_ID)) {
             DESTINATION = new DateTime(2016, 3, 22, 16, 45, DateTimeZone.forID(TIME_ZONE_ID));
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
             DESTINATION = new DateTime(2016, 3, 22, 16, 45);
         }
     }
+
+    private final Timer timer1 = new Timer();
 
 
     @Override
@@ -51,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         Period period = new Period(now, DESTINATION, PeriodType.dayTime());
 
         timer.setText(period.toString(PRECISE_FORMATTER));
-        Timer timer1 = new Timer();
         timer1.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -68,4 +70,9 @@ public class MainActivity extends AppCompatActivity {
         }, 0L, 500L);
     }
 
+    @Override
+    protected void onDestroy() {
+        timer1.cancel();
+        super.onDestroy();
+    }
 }

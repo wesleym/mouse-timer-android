@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     private final Timer timer1 = new Timer();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
         Period period = new Period(now, DESTINATION, PeriodType.dayTime());
 
         timer.setText(period.toString(PRECISE_FORMATTER));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         timer1.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -71,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
         timer1.cancel();
-        super.onDestroy();
+        super.onPause();
     }
 }

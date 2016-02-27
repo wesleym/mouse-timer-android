@@ -3,4 +3,5 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="title_activity_main">Mouse Timer</string>
+    <string name="destination_not_set">Time not set</string>
 </resources>

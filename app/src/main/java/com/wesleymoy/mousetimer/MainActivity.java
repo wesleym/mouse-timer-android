@@ -9,7 +9,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Period;
-import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
@@ -44,22 +43,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Timer timer1;
+    private TextView timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView timer = (TextView) findViewById(R.id.timer);
+        timer = (TextView) findViewById(R.id.timer);
         DateTime now = DateTime.now();
         Duration duration = new Duration(now, DESTINATION);
 
-        Period period = duration.toPeriod(PeriodType.dayTime());
-        int hours = period.getHours();
-        int days = hours / 24;
-        hours %= 24;
-        period = period.withHours(hours).withDays(days);
-
+        Period period = new TwentyFourHourDayConverter().convert(duration);
         timer.setText(period.toString(PRECISE_FORMATTER));
     }
 
@@ -73,16 +68,13 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TextView timer = (TextView) findViewById(R.id.timer);
+                        if (timer == null) {
+                            return;
+                        }
                         DateTime now = DateTime.now();
                         Duration duration = new Duration(now, DESTINATION);
 
-                        Period period = duration.toPeriod(PeriodType.dayTime());
-                        int hours = period.getHours();
-                        int days = hours / 24;
-                        hours %= 24;
-                        period = period.withHours(hours).withDays(days);
-
+                        Period period = new TwentyFourHourDayConverter().convert(duration);
                         timer.setText(period.toString(PRECISE_FORMATTER));
                     }
                 });
@@ -95,5 +87,11 @@ public class MainActivity extends AppCompatActivity {
         timer1.cancel();
         timer1 = null;
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        timer = null;
+        super.onDestroy();
     }
 }

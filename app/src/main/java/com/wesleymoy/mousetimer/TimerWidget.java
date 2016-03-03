@@ -10,8 +10,8 @@ import android.widget.RemoteViews;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
 import org.joda.time.Period;
-import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormat;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -45,7 +45,8 @@ public class TimerWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         DateTime now = DateTime.now();
-        Period period = new Period(now, DESTINATION, PeriodType.dayTime());
+        Duration duration = new Duration(now, DESTINATION);
+        Period period = new TwentyFourHourDayConverter().convert(duration);
 
 
         Intent intent = new Intent(context, MainActivity.class);

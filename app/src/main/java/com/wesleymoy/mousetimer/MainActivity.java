@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.format.PeriodFormatter;
@@ -31,17 +32,18 @@ public class MainActivity extends AppCompatActivity {
     private static final DateTime DESTINATION;
     private static final String TIME_ZONE_ID = "America/Los_Angeles";
     private static final String TAG = "TimerWidget";
+    private static final DateTimeZone TIME_ZONE = DateTimeZone.forID(TIME_ZONE_ID);
 
     static {
         if (DateTimeZone.getAvailableIDs().contains(TIME_ZONE_ID)) {
-            DESTINATION = new DateTime(2016, 3, 22, 16, 45, DateTimeZone.forID(TIME_ZONE_ID));
+            DESTINATION = new DateTime(2016, 3, 22, 16, 45, TIME_ZONE);
         } else {
             Log.e(TAG, "Time zone " + TIME_ZONE_ID + " not found; using system default instead");
             DESTINATION = new DateTime(2016, 3, 22, 16, 45);
         }
     }
 
-    private final Timer timer1 = new Timer();
+    private Timer timer1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,13 @@ public class MainActivity extends AppCompatActivity {
 
         TextView timer = (TextView) findViewById(R.id.timer);
         DateTime now = DateTime.now();
-        Period period = new Period(now, DESTINATION, PeriodType.dayTime());
+        Duration duration = new Duration(now, DESTINATION);
+
+        Period period = duration.toPeriod(PeriodType.dayTime());
+        int hours = period.getHours();
+        int days = hours / 24;
+        hours %= 24;
+        period = period.withHours(hours).withDays(days);
 
         timer.setText(period.toString(PRECISE_FORMATTER));
     }
@@ -58,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        timer1 = new Timer();
         timer1.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -66,7 +75,14 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         TextView timer = (TextView) findViewById(R.id.timer);
                         DateTime now = DateTime.now();
-                        Period period = new Period(now, DESTINATION, PeriodType.dayTime());
+                        Duration duration = new Duration(now, DESTINATION);
+
+                        Period period = duration.toPeriod(PeriodType.dayTime());
+                        int hours = period.getHours();
+                        int days = hours / 24;
+                        hours %= 24;
+                        period = period.withHours(hours).withDays(days);
+
                         timer.setText(period.toString(PRECISE_FORMATTER));
                     }
                 });
@@ -77,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         timer1.cancel();
+        timer1 = null;
         super.onPause();
     }
 }

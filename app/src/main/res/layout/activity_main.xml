@@ -6,4 +6,4 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     tools:text="2d 18:42:33"
-    android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+    android:textAppearance="@style/TextAppearance.AppCompat.Display2"/>
